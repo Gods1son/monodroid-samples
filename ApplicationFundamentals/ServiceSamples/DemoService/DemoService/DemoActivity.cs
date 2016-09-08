@@ -1,11 +1,8 @@
 using System;
-
 using Android.App;
 using Android.Content;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
+using Android.Widget;
 
 namespace DemoService
 {
@@ -23,21 +20,19 @@ namespace DemoService
 
 			SetContentView (Resource.Layout.Main);
 
-			var start = FindViewById<Button> (Resource.Id.startService);
-            
+			Button start = FindViewById<Button> (Resource.Id.startService);
+
 			start.Click += delegate {
-				//StartService (new Intent (this, typeof(DemoService)));
-				StartService (new Intent ("com.xamarin.DemoService"));
-			};
-            
-			var stop = FindViewById<Button> (Resource.Id.stopService);
-            
-			stop.Click += delegate {
-				//StopService (new Intent (this, typeof(DemoService)));
-				StopService (new Intent ("com.xamarin.DemoService"));
+				StartService (new Intent (this, typeof (DemoService)));
 			};
 
-			var callService = FindViewById<Button> (Resource.Id.callService);
+			Button stop = FindViewById<Button> (Resource.Id.stopService);
+
+			stop.Click += delegate {
+				StopService (new Intent(this, typeof(DemoService)));
+			};
+
+			Button callService = FindViewById<Button> (Resource.Id.callService);
 
 			callService.Click += delegate {
 				if (isBound) {
@@ -52,15 +47,16 @@ namespace DemoService
 			// restore from connection there was a configuration change, such as a device rotation
 			demoServiceConnection = LastNonConfigurationInstance as DemoServiceConnection;
 
-			if (demoServiceConnection != null)
+			if (demoServiceConnection != null) {
 				binder = demoServiceConnection.Binder;
+			}
 		}
 
 		protected override void OnStart ()
 		{
 			base.OnStart ();
 
-			var demoServiceIntent = new Intent ("com.xamarin.DemoService");
+			Intent demoServiceIntent = new Intent (this, typeof(DemoService));
 			demoServiceConnection = new DemoServiceConnection (this);
 			ApplicationContext.BindService (demoServiceIntent, demoServiceConnection, Bind.AutoCreate);
 		}
@@ -102,17 +98,17 @@ namespace DemoService
 			{
 				this.activity = activity;
 			}
-          
+
 			public void OnServiceConnected (ComponentName name, IBinder service)
 			{
-				var demoServiceBinder = service as DemoServiceBinder;
+				DemoServiceBinder demoServiceBinder = service as DemoServiceBinder;
 				if (demoServiceBinder != null) {
-					var binder = (DemoServiceBinder)service;
-					activity.binder = binder;
+					DemoServiceBinder bindr = (DemoServiceBinder)service;
+					activity.binder = bindr;
 					activity.isBound = true;
 
 					// keep instance for preservation across configuration changes
-					this.binder = (DemoServiceBinder)service;
+					this.binder = bindr;
 				}
 			}
 
@@ -121,8 +117,6 @@ namespace DemoService
 				activity.isBound = false;
 			}
 		}
-
-     
 	}
 }
 

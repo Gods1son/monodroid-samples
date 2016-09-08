@@ -1,24 +1,26 @@
 using System;
 using Android.App;
 using System.Threading;
+using Android.Util;
 
 namespace DemoService
 {
-    [Service]
-    [IntentFilter(new String[]{"com.xamarin.DemoIntentService"})]
+	[Service(Exported = false)]
     public class DemoIntentService : IntentService
     {
+		static readonly string TAG = typeof (DemoIntentService).Name;
+
         public DemoIntentService () : base("DemoIntentService")
         {
         }
 
         protected override void OnHandleIntent (Android.Content.Intent intent)
         {
-            Console.WriteLine ("perform some long running work");
+			Log.Debug(TAG,  "Perform some long running work");
 
             Thread.Sleep (5000);
 
-            Console.WriteLine ("work complete");
+            Log.Debug(TAG,"work complete");
         }
     }
 }

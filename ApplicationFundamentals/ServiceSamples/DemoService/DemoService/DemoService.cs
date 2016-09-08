@@ -1,22 +1,21 @@
-using System;
-using Android.App;
-using Android.Util;
 using System.Threading;
+using Android.App;
 using Android.Content;
-using Android.Widget;
 using Android.OS;
+using Android.Util;
+using Android.Widget;
 
 namespace DemoService
 {
-	[Service]
-	[IntentFilter(new String[]{"com.xamarin.DemoService"})]
+	[Service(Exported=false)]
 	public class DemoService : Service
 	{
+		static readonly string TAG = typeof (DemoService).Name;
 		DemoServiceBinder binder;
 
 		public override StartCommandResult OnStartCommand (Android.Content.Intent intent, StartCommandFlags flags, int startId)
 		{
-			Log.Debug ("DemoService", "DemoService started");
+			Log.Debug (TAG, "DemoService started");
 
 			StartServiceInForeground ();
 
@@ -27,8 +26,8 @@ namespace DemoService
 
 		void StartServiceInForeground ()
 		{
-			var ongoing = new Notification (Resource.Drawable.icon, "DemoService in foreground");
-			var pendingIntent = PendingIntent.GetActivity (this, 0, new Intent (this, typeof(DemoActivity)), 0);
+			Notification ongoing = new Notification (Resource.Drawable.icon, "DemoService in foreground");
+			PendingIntent pendingIntent = PendingIntent.GetActivity (this, 0, new Intent (this, typeof(DemoActivity)), 0);
 			ongoing.SetLatestEventInfo (this, "DemoService", "DemoService is running in the foreground", pendingIntent);
 
 			StartForeground ((int)NotificationFlags.ForegroundService, ongoing);
@@ -38,14 +37,14 @@ namespace DemoService
 		{
 			base.OnDestroy ();
             
-			Log.Debug ("DemoService", "DemoService stopped");       
+			Log.Debug (TAG, "DemoService stopped");       
 		}
 
 		void SendNotification ()
 		{
-			var nMgr = (NotificationManager)GetSystemService (NotificationService);
-			var notification = new Notification (Resource.Drawable.icon, "Message from demo service");
-			var pendingIntent = PendingIntent.GetActivity (this, 0, new Intent (this, typeof(DemoActivity)), 0);
+			NotificationManager nMgr = (NotificationManager)GetSystemService (NotificationService);
+			Notification notification = new Notification (Resource.Drawable.icon, "Message from demo service");
+			PendingIntent pendingIntent = PendingIntent.GetActivity (this, 0, new Intent (this, typeof(DemoActivity)), 0);
 			notification.SetLatestEventInfo (this, "Demo Service Notification", "Message from demo service", pendingIntent);
 			nMgr.Notify (0, notification);
 		}
@@ -54,13 +53,13 @@ namespace DemoService
 		{
 			Toast.MakeText (this, "The demo service has started", ToastLength.Long).Show ();
 
-			var t = new Thread (() => {
+			Thread t = new Thread (() => {
 
 				SendNotification ();
 
 				Thread.Sleep (5000);
 
-				Log.Debug ("DemoService", "Stopping foreground");
+				Log.Debug (TAG, "Stopping foreground");
 				StopForeground (true);
 
 				StopSelf ();
@@ -78,7 +77,7 @@ namespace DemoService
 
 		public string GetText ()
 		{
-			return "some text from the service";
+			return "Some text from " + this.GetType().FullName;
 		}
 	}
 
