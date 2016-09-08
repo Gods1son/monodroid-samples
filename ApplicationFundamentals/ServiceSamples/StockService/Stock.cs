@@ -14,7 +14,7 @@ namespace StockService
 
 		public override string ToString ()
 		{
-			return string.Format ("[Stock: Symbol={0}, LastPrice={1}]", Symbol, LastPrice);
+			return string.Format ("[Stock: Symbol = {0}, LastPrice = {1:C}]", Symbol, LastPrice);
 		}
 	}
 }

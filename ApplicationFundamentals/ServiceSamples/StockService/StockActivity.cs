@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -7,20 +8,22 @@ using Android.Widget;
 
 namespace StockService
 {
-	[Activity (Label = "StockService", MainLauncher = true, Icon="@drawable/Icon")]
+	[Activity (Label = "StockService", MainLauncher = true, Icon = "@drawable/Icon")]
 	public class StockActivity : ListActivity
 	{
-		bool isBound = false;
+		static readonly string TAG = typeof (StockActivity).Name;
+
+		bool isBound;
 		StockServiceBinder binder;
 		StockServiceConnection stockServiceConnection;
 		StockReceiver stockReceiver;
 		Intent stockServiceIntent;
 
-		protected override void OnCreate (Bundle bundle)
+		protected override void OnCreate (Bundle savedInstanceState)
 		{
-			base.OnCreate (bundle);
+			base.OnCreate (savedInstanceState);
 
-			stockServiceIntent = new Intent ("com.xamarin.StockService");
+			stockServiceIntent = new Intent (this, typeof (StockService));
 			stockReceiver = new StockReceiver ();
 		}
 
@@ -28,7 +31,7 @@ namespace StockService
 		{
 			base.OnStart ();
 
-			var intentFilter = new IntentFilter (StockService.StocksUpdatedAction){Priority = (int)IntentFilterPriority.HighPriority};
+			IntentFilter intentFilter = new IntentFilter (StockService.StocksUpdatedAction) { Priority = (int)IntentFilterPriority.HighPriority };
 			RegisterReceiver (stockReceiver, intentFilter);
 
 			stockServiceConnection = new StockServiceConnection (this);
@@ -53,13 +56,11 @@ namespace StockService
 		void ScheduleStockUpdates ()
 		{
 			if (!IsAlarmSet ()) {
-				var alarm = (AlarmManager)GetSystemService (Context.AlarmService);
-
-				var pendingServiceIntent = PendingIntent.GetService (this, 0, stockServiceIntent, PendingIntentFlags.CancelCurrent);
-				alarm.SetRepeating (AlarmType.Rtc, 0, 5000, pendingServiceIntent);
-				//alarm.SetRepeating (AlarmType.Rtc, 0, AlarmManager.IntervalHalfHour, pendingServiceIntent);
+				AlarmManager alarm = (AlarmManager)GetSystemService (Context.AlarmService);
+				PendingIntent pendingServiceIntent = PendingIntent.GetService (this, 0, stockServiceIntent, PendingIntentFlags.CancelCurrent);
+				alarm.SetRepeating (AlarmType.Rtc, 0, 15000, pendingServiceIntent);
 			} else {
-				Console.WriteLine ("alarm already set");
+				Log.Debug (TAG, "Alarm is already set.");
 			}
 		}
 
@@ -71,58 +72,49 @@ namespace StockService
 		void GetStocks ()
 		{
 			if (isBound) {
-				RunOnUiThread (() => {
-					var stocks = binder.GetStockService ().GetStocks ();
-
-					if (stocks != null) {
-						ListAdapter = new ArrayAdapter<Stock> (
-                    	this,
-                     	Resource.Layout.StockItemView,
-                        stocks
-						); 
-					} else {
-						Log.Debug ("StockService", "stocks is null");
-					}
+				List<Stock> stocks = binder.GetStockService ().GetStocks ();
+				if (stocks != null) {
+					ListAdapter = new ArrayAdapter<Stock> (this, Resource.Layout.StockItemView, stocks);
+				} else {
+					Log.Debug (TAG, "Stocks are null.");
 				}
-				);
 			}
+
 		}
 
 		class StockReceiver : BroadcastReceiver
 		{
-			public override void OnReceive (Context context, Android.Content.Intent intent)
+			public override void OnReceive (Context context, Intent intent)
 			{
 				((StockActivity)context).GetStocks ();
-
 				InvokeAbortBroadcast ();
 			}
 		}
 
 		class StockServiceConnection : Java.Lang.Object, IServiceConnection
 		{
-			StockActivity activity;
+			readonly StockActivity parent;
 
 			public StockServiceConnection (StockActivity activity)
 			{
-				this.activity = activity;
+				parent = activity;
 			}
-          
+
 			public void OnServiceConnected (ComponentName name, IBinder service)
 			{
-				var stockServiceBinder = service as StockServiceBinder;
+				StockServiceBinder stockServiceBinder = service as StockServiceBinder;
 				if (stockServiceBinder != null) {
-					var binder = (StockServiceBinder)service;
-					activity.binder = binder;
-					activity.isBound = true;
+					parent.binder = stockServiceBinder;
+					parent.isBound = true;
+				} else {
+					parent.isBound = false;
 				}
 			}
 
 			public void OnServiceDisconnected (ComponentName name)
 			{
-				activity.isBound = false;
+				parent.isBound = false;
 			}
 		}
 	}
 }
-
-

@@ -11,8 +11,7 @@ using Android.Util;
 
 namespace StockService
 {
-	[Service]
-	[IntentFilter(new String[]{"com.xamarin.StockService"})]
+	[Service(Exported=false, Name="com.xamarin.example.StockService")]
 	public class StockService : IntentService
 	{
 		IBinder binder;
@@ -21,7 +20,7 @@ namespace StockService
 
 		protected override void OnHandleIntent (Intent intent)
 		{
-			var stockSymbols = new List<string> (){"AMZN", "FB", "GOOG", "AAPL", "MSFT", "IBM"};
+			var stockSymbols = new List<string> { "AMZN", "FB", "GOOG", "AAPL", "MSFT", "IBM"};
 
 			stocks = UpdateStocks (stockSymbols);
 
@@ -46,19 +45,19 @@ namespace StockService
 			List<Stock> results = null;
 
 			string[] array = symbols.ToArray ();
-			string symbolsString = String.Join ("%22%2C%22", array);
+			string symbolsString = string.Join ("%22%2C%22", array);
 
-			string uri = String.Format (
+			string uri = string.Format (
                 "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22{0}%22)%0A%09%09&diagnostics=false&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env",
                 symbolsString);
 
-			var httpReq = (HttpWebRequest)HttpWebRequest.Create (new Uri (uri));
+			HttpWebRequest httpReq = (HttpWebRequest)HttpWebRequest.Create (new Uri (uri));
 
 			try {
 				using (HttpWebResponse httpRes = (HttpWebResponse)httpReq.GetResponse ()) {
 
-					var response = httpRes.GetResponseStream ();
-					var json = (JsonObject)JsonObject.Load (response);
+					System.IO.Stream response = httpRes.GetResponseStream ();
+					JsonObject json = (JsonObject)JsonObject.Load (response);
             
 					results = (from result in (JsonArray)json ["query"] ["results"] ["quote"]
                            let jResult = result as JsonObject 
@@ -75,7 +74,7 @@ namespace StockService
 
 	public class StockServiceBinder : Binder
 	{
-		StockService service;
+		readonly StockService service;
 
 		public StockServiceBinder (StockService service)
 		{
