@@ -5,7 +5,8 @@ using Android.Util;
 
 namespace StockService
 {
-	[Service()]
+	
+	[Service(Exported = true, IsolatedProcess=true)]
 	public class DemoMessengerService : Service
 	{
 		public const int MSG_SAY_HELLO = 1;
