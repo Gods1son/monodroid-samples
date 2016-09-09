@@ -10,11 +10,15 @@ namespace StockService
 	{
 		public override void OnReceive (Context context, Intent intent)
 		{
-			NotificationManager nMgr = (NotificationManager)context.GetSystemService (Context.NotificationService);
-			Notification notification = new Notification (Resource.Drawable.icon, "New stock data is available");
+			NotificationManager manager = (NotificationManager)context.GetSystemService (Context.NotificationService);
 			PendingIntent pendingIntent = PendingIntent.GetActivity (context, 0, new Intent (context, typeof (StockActivity)), 0);
-			notification.SetLatestEventInfo (context, "Stocks Updated", "New stock data is available", pendingIntent);
-			nMgr.Notify (0, notification);
+
+			Notification.Builder builder = new Notification.Builder (context.ApplicationContext);
+			builder.SetContentTitle ("Stocks Update")
+				   .SetContentText ("New stock data is available")
+				   .SetSmallIcon (Resource.Drawable.icon)
+				   .SetContentIntent (pendingIntent);
+			manager.Notify (0, builder.Build());
 		}
 	}
 }

@@ -11,6 +11,7 @@ namespace DemoService
 	public class DemoService : Service
 	{
 		static readonly string TAG = typeof (DemoService).Name;
+
 		DemoServiceBinder binder;
 
 		public override StartCommandResult OnStartCommand (Android.Content.Intent intent, StartCommandFlags flags, int startId)
@@ -26,11 +27,15 @@ namespace DemoService
 
 		void StartServiceInForeground ()
 		{
-			Notification ongoing = new Notification (Resource.Drawable.icon, "DemoService in foreground");
 			PendingIntent pendingIntent = PendingIntent.GetActivity (this, 0, new Intent (this, typeof(DemoActivity)), 0);
-			ongoing.SetLatestEventInfo (this, "DemoService", "DemoService is running in the foreground", pendingIntent);
 
-			StartForeground ((int)NotificationFlags.ForegroundService, ongoing);
+			Notification.Builder builder = new Notification.Builder (ApplicationContext);
+			builder.SetContentTitle ("Demo Service")
+				   .SetContentText ("Demo Service is running in the foreground.")
+				   .SetSmallIcon (Resource.Drawable.icon)
+				   .SetContentIntent (pendingIntent);
+			
+			StartForeground ((int)NotificationFlags.ForegroundService, builder.Build());
 		}
 
 		public override void OnDestroy ()
@@ -42,11 +47,17 @@ namespace DemoService
 
 		void SendNotification ()
 		{
+			PendingIntent pendingIntent = PendingIntent.GetActivity (this, 0, new Intent (this, typeof (DemoActivity)), 0);
+
+			Notification.Builder builder = new Notification.Builder (ApplicationContext);
+
+			builder.SetContentTitle ("Demo Service")
+				   .SetContentText ("Message from " + this.GetType ().Name)
+			       .SetContentIntent(pendingIntent)
+				   .SetSmallIcon (Resource.Drawable.icon);
+			
 			NotificationManager nMgr = (NotificationManager)GetSystemService (NotificationService);
-			Notification notification = new Notification (Resource.Drawable.icon, "Message from demo service");
-			PendingIntent pendingIntent = PendingIntent.GetActivity (this, 0, new Intent (this, typeof(DemoActivity)), 0);
-			notification.SetLatestEventInfo (this, "Demo Service Notification", "Message from demo service", pendingIntent);
-			nMgr.Notify (0, notification);
+			nMgr.Notify (0, builder.Build());
 		}
 
 		public void DoWork ()
