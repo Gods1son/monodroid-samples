@@ -1,22 +1,24 @@
-Service Samples
-===============
+# Xamarin.Android Service Samples
 
-Example code from the **Creating Services** article. 
+Example code from the **[Creating Services](https://developer.xamarin.com/guides/android/application_fundamentals/services/)** article. This directory contains two solutions, described below.
 
-Contains two solutions:
+Each of these samples requires Android 4.4 (API level 19) or higher.
 
-### DemoService
+## DemoService
+This solution contains two projects. Of the two, make sure that the **DemoService** app is built and installed on your emulator or device _before_ trying the **DemoMessengerClient** app.
 
-Sample code from first part of article which shows a variety of Android 
-service fundamentals. Also includes a client project named 
-*DemoMessengerClient* used to call a service across processes using the 
-*Android.OS.Messenger* class. 
+### DemoService ###
 
-### StockService
+This is a Xamarin.Android application that contains three services. `DemoService` which is an example of creating a started Service. `DemoMessengerService` is a
 
-Contains sample code for walkthrough presented in the second half of 
-the **Creating Services** article. 
+### DemoMessengerClient ### 
 
-### Authors
----
-Mike Bluestein
+This is a sample that will perform an IPC call to the `DemoMessengerService` that is provided by the **DemoService** app.
+
+## StockService
+
+This solution is a sample project which demonstrates how to use an `IntentService` to query a website for stock prices.
+
+# Authors
+
+Mike Bluestein, Tom Opgenorth
