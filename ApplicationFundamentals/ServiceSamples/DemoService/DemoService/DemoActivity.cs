@@ -23,13 +23,13 @@ namespace DemoService
 			Button start = FindViewById<Button> (Resource.Id.startService);
 
 			start.Click += delegate {
-				StartService (new Intent (this, typeof (DemoService)));
+				StartService (new Intent (ApplicationContext, typeof (DemoService)));
 			};
 
 			Button stop = FindViewById<Button> (Resource.Id.stopService);
 
 			stop.Click += delegate {
-				StopService (new Intent(this, typeof(DemoService)));
+				StopService (new Intent(ApplicationContext, typeof(DemoService)));
 			};
 
 			Button callService = FindViewById<Button> (Resource.Id.callService);
@@ -56,7 +56,7 @@ namespace DemoService
 		{
 			base.OnStart ();
 
-			Intent demoServiceIntent = new Intent (this, typeof(DemoService));
+			Intent demoServiceIntent = new Intent (ApplicationContext, typeof(DemoService));
 			demoServiceConnection = new DemoServiceConnection (this);
 			ApplicationContext.BindService (demoServiceIntent, demoServiceConnection, Bind.AutoCreate);
 		}
@@ -103,12 +103,11 @@ namespace DemoService
 			{
 				DemoServiceBinder demoServiceBinder = service as DemoServiceBinder;
 				if (demoServiceBinder != null) {
-					DemoServiceBinder bindr = (DemoServiceBinder)service;
-					activity.binder = bindr;
+					activity.binder = demoServiceBinder;
 					activity.isBound = true;
 
 					// keep instance for preservation across configuration changes
-					this.binder = bindr;
+					this.binder = demoServiceBinder;
 				}
 			}
 
