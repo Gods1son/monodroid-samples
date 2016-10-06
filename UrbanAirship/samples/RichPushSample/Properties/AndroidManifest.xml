@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.xamarin.samples.urbanairship.richpush" android:versionCode="1" android:versionName="1.0">
 	<!-- minSdkVersion sets runtime compatibility ("will run on API level 7") -->
 	<!-- targetSdkVersion should be set to the latest version tested, to disable compatibility modes 
             ("was tested with API level 15 features") -->
-	<uses-sdk android:minSdkVersion="10" android:targetSdkVersion="17" />
+	<uses-sdk android:minSdkVersion="10" />
 	<!-- REQUIRED PERMISSIONS (for Urban Airship GCM) -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
