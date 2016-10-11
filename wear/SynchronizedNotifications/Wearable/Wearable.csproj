@@ -45,9 +45,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
-    <Reference Include="Xamarin.GooglePlayServices.Wearable">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Wearable.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Wearable.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.Compat">
       <HintPath>..\packages\Xamarin.Android.Support.Compat.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Compat.dll</HintPath>
     </Reference>
@@ -77,6 +74,10 @@
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Base">
       <HintPath>..\packages\Xamarin.GooglePlayServices.Base.32.4.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Wearable">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Wearable.32.4.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Wearable.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
