@@ -1,24 +1,23 @@
 # Xamarin.Android Service Samples
 
-Example code from the **[Creating Services](https://developer.xamarin.com/guides/android/application_fundamentals/services/)** article. This directory contains two solutions, described below.
+This directory holds the sample projects from the [Creating Services](https://developer.xamarin.com/guides/android/application_fundamentals/services/) guides for Xamarin.Android. There are multiple solutions in the subdirectories of this project. Each solution is meant to be a stand alone solution that focus on a specific topic.
 
-Each of these samples requires Android 4.4 (API level 19) or higher.
+## ServicesDemo1
 
-## DemoService
-This solution contains two projects. Of the two, make sure that the **DemoService** app is built and installed on your emulator or device _before_ trying the **DemoMessengerClient** app.
+This solution shows how to [create and use a bound service](https://developer.xamarin.com/guides/android/application_fundamentals/services/creating-a-service/bound-service) in Xamarin.Android. The bound service will expose a method that can be called by the activity that is bound to it.
 
-### DemoService ###
+**TODO: SCREENSHOTS**
 
-This is a Xamarin.Android application that contains three services. `DemoService` which is an example of creating a started Service. `DemoMessengerService` is a
 
-### DemoMessengerClient ### 
+## ServicesDemo2
 
-This is a sample that will perform an IPC call to the `DemoMessengerService` that is provided by the **DemoService** app.
+This solution is a example of how to [create and use a started service](https://developer.xamarin.com/guides/android/application_fundamentals/services) in Xamarin.Android. In this example, there is no direct communication between the activity and the service it starts. The activity will start and stop the services. The service, while it is running, will log messages  
 
-## StockService
+[](./Screenshots/StartedServices1.png)
+[](./Screenshots/StartedServices2.png)
+[](./Screenshots/StartedServices3.png)
 
-This solution is a sample project which demonstrates how to use an `IntentService` to query a website for stock prices.
 
-# Authors
+## Authors
 
-Mike Bluestein, Tom Opgenorth
+Tom Opgenorth
