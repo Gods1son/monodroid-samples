@@ -5,7 +5,7 @@ using Android.Content;
 using Android.OS;
 using System.Threading;
 
-namespace ServicesDemo2
+namespace ServicesDemo3
 {
 	/// <summary>
 	/// This is a sample started service. When the service is started, it will log a string that details how long 
@@ -16,8 +16,6 @@ namespace ServicesDemo2
 	public class TimestampService : Service
 	{
 		static readonly string TAG = typeof(TimestampService).FullName;
-		static readonly int DELAY_BETWEEN_LOG_MESSAGES = 5000; // milliseconds
-		static readonly int NOTIFICATION_ID = 10000;
 
 		UtcTimestamper timestamper;
 		bool isStarted;
@@ -35,10 +33,22 @@ namespace ServicesDemo2
 			// This Action is only for demonstration purposes.
 			runnable = new Action(() =>
 							{
-								if (timestamper != null)
+								if (timestamper == null)
 								{
-									Log.Debug(TAG, timestamper.GetFormattedTimestamp());
-									handler.PostDelayed(runnable, DELAY_BETWEEN_LOG_MESSAGES);
+									Log.Wtf(TAG, "Why isn't there a Timestamper initialized?");
+								}
+								else
+								{
+									string msg = timestamper.GetFormattedTimestamp();
+									Log.Debug(TAG, msg);
+
+									Intent i = new Intent(Constants.NOTIFICATION_BROADCAST_ACTION);
+									i.PutExtra(Constants.BROADCAST_MESSAGE_KEY, msg);
+									Android.Support.V4.Content.LocalBroadcastManager.GetInstance(this).SendBroadcastSync(i);
+
+									handler.PostDelayed(runnable, Constants.DELAY_BETWEEN_LOG_MESSAGES);
+
+
 								}
 							});
 		}
@@ -53,7 +63,7 @@ namespace ServicesDemo2
 			{
 				Log.Info(TAG, "OnStartCommand: The service is starting.");
 				DispatchNotificationThatServiceIsRunning();
-				handler.PostDelayed(runnable, DELAY_BETWEEN_LOG_MESSAGES);
+				handler.PostDelayed(runnable, Constants.DELAY_BETWEEN_LOG_MESSAGES);
 				isStarted = true;
 			}
 
@@ -81,7 +91,7 @@ namespace ServicesDemo2
 
 			// Remove the notification from the status bar.
 			var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-			notificationManager.Cancel(NOTIFICATION_ID);
+			notificationManager.Cancel(Constants.SERVICE_RUNNING_NOTIFICATION_ID);
 
 			timestamper = null;
 			isStarted = false;
@@ -105,7 +115,10 @@ namespace ServicesDemo2
 				.SetContentText(Resources.GetString(Resource.String.notification_text));
 
 			var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-			notificationManager.Notify(NOTIFICATION_ID, notificationBuilder.Build());
+			notificationManager.Notify(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notificationBuilder.Build());
 		}
 	}
+
+
+
 }
