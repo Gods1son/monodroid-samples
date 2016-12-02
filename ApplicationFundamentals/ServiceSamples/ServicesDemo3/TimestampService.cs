@@ -7,6 +7,7 @@ using System.Threading;
 
 namespace ServicesDemo3
 {
+
 	/// <summary>
 	/// This is a sample started service. When the service is started, it will log a string that details how long 
 	/// the service has been running (using Android.Util.Log). This service displays a notification in the notification
@@ -41,34 +42,48 @@ namespace ServicesDemo3
 								{
 									string msg = timestamper.GetFormattedTimestamp();
 									Log.Debug(TAG, msg);
-
 									Intent i = new Intent(Constants.NOTIFICATION_BROADCAST_ACTION);
 									i.PutExtra(Constants.BROADCAST_MESSAGE_KEY, msg);
-									Android.Support.V4.Content.LocalBroadcastManager.GetInstance(this).SendBroadcastSync(i);
-
+									Android.Support.V4.Content.LocalBroadcastManager.GetInstance(this).SendBroadcast(i);
 									handler.PostDelayed(runnable, Constants.DELAY_BETWEEN_LOG_MESSAGES);
-
-
 								}
 							});
 		}
 
 		public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
 		{
-			if (isStarted)
+			if (intent.Action.Equals(Constants.ACTION_START_SERVICE))
 			{
-				Log.Info(TAG, "OnStartCommand: This service has already been started.");
+				if (isStarted)
+				{
+					Log.Info(TAG, "OnStartCommand: The service is already running.");
+				}
+				else 
+				{
+					Log.Info(TAG, "OnStartCommand: The service is starting.");
+					StartServiceInForeground();
+					handler.PostDelayed(runnable, Constants.DELAY_BETWEEN_LOG_MESSAGES);
+					isStarted = true;
+				}
 			}
-			else
+			else if (intent.Action.Equals(Constants.ACTION_STOP_SERVICE))
 			{
-				Log.Info(TAG, "OnStartCommand: The service is starting.");
-				DispatchNotificationThatServiceIsRunning();
-				handler.PostDelayed(runnable, Constants.DELAY_BETWEEN_LOG_MESSAGES);
-				isStarted = true;
+				Log.Info(TAG, "OnStartCommand: The service is stopping.");
+				timestamper = null;
+				StopForeground(true);
+				StopSelf();
+				isStarted = false;
+
+			}
+			else if (intent.Action.Equals(Constants.ACTION_RESTART_TIMER))
+			{
+				Log.Info(TAG, "OnStartCommand: Restarting the timer.");
+				timestamper.Restart();
+
 			}
 
 			// This tells Android not to restart the service if it is killed to reclaim resources.
-			return StartCommandResult.NotSticky;
+			return StartCommandResult.Sticky;
 		}
 
 
@@ -83,7 +98,7 @@ namespace ServicesDemo3
 		public override void OnDestroy()
 		{
 			// We need to shut things down.
-			Log.Debug(TAG, GetFormattedTimestamp());
+			Log.Debug(TAG, GetFormattedTimestamp() ?? "The TimeStamper has been disposed.");
 			Log.Info(TAG, "OnDestroy: The started service is shutting down.");
 
 			// Stop the handler.
@@ -104,21 +119,61 @@ namespace ServicesDemo3
 		/// <returns>A string that details what time the service started and how long it has been running.</returns>
 		string GetFormattedTimestamp()
 		{
+			
 			return timestamper?.GetFormattedTimestamp();
 		}
 
-		void DispatchNotificationThatServiceIsRunning()
+		void StartServiceInForeground()
 		{
-			Notification.Builder notificationBuilder = new Notification.Builder(this)
-				.SetSmallIcon(Resource.Drawable.ic_stat_name)
+			var notification = new Notification.Builder(this)
 				.SetContentTitle(Resources.GetString(Resource.String.app_name))
-				.SetContentText(Resources.GetString(Resource.String.notification_text));
+				.SetTicker("TICKER TEXT")
+				.SetContentText(Resources.GetString(Resource.String.notification_text))
+				.SetSmallIcon(Resource.Drawable.ic_stat_name)
+				.SetContentIntent(BuildContentIntent())
+				.SetOngoing(true)
+				.AddAction(BuildRestartTimerAction())
+				.AddAction(BuildStopServiceAction())
+				.Build();
 
-			var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-			notificationManager.Notify(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notificationBuilder.Build());
+			StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification);
+		}
+
+		PendingIntent BuildContentIntent()
+		{
+			var notificationIntent = new Intent(this, typeof(MainActivity));
+			notificationIntent.SetAction(Constants.ACTION_MAIN_ACTIVITY);
+			notificationIntent.SetFlags(ActivityFlags.SingleTop | ActivityFlags.ClearTask);
+			notificationIntent.PutExtra(Constants.SERVICE_STARTED_KEY, true);
+
+			var pendingIntent = PendingIntent.GetActivity(this, 0, notificationIntent, PendingIntentFlags.UpdateCurrent);
+			return pendingIntent;
+		}
+
+		Notification.Action BuildRestartTimerAction()
+		{
+			var restartTimerIntent = new Intent(this, GetType());
+			restartTimerIntent.SetAction(Constants.ACTION_RESTART_TIMER);
+			var restartTimerPendingIntent = PendingIntent.GetService(this, 0, restartTimerIntent, 0);
+
+			var builder = new Notification.Action.Builder(Resource.Drawable.ic_action_restart_timer,
+											  GetText(Resource.String.restart_timer),
+											  restartTimerPendingIntent);
+
+			return builder.Build();
+		}
+
+		Notification.Action BuildStopServiceAction()
+		{
+			var stopServiceIntent = new Intent(this, GetType());
+			stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
+			var stopServicePendingIntent = PendingIntent.GetService(this, 0, stopServiceIntent, 0);
+
+			var builder = new Notification.Action.Builder(Android.Resource.Drawable.IcMediaPause,
+														  GetText(Resource.String.stop_service),
+														  stopServicePendingIntent);
+			return builder.Build();
+
 		}
 	}
-
-
-
 }

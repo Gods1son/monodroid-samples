@@ -8,16 +8,18 @@ This solution shows how to [create and use a bound service](https://developer.xa
 
 **TODO: SCREENSHOTS**
 
-
 ## ServicesDemo2
 
-This solution is a example of how to [create and use a started service](https://developer.xamarin.com/guides/android/application_fundamentals/services) in Xamarin.Android. In this example, there is no direct communication between the activity and the service it starts. The activity will start and stop the services. The service, while it is running, will log messages  
+This solution is a example of how to [create and use a started service](https://developer.xamarin.com/guides/android/application_fundamentals/services) in Xamarin.Android. In this example, there is no direct communication between the activity and the service it starts. The activity will start and stop the services. The service, while it is running, will log messages using Android.Util.Log.
 
 [](./Screenshots/StartedServices1.png)
 [](./Screenshots/StartedServices2.png)
 [](./Screenshots/StartedServices3.png)
 
+## ServicesDemo3
+
+This solution is a variant of **ServicesDemo2**, except that the started service will register as a _foreground service_.
 
 ## Authors
 
-Tom Opgenorth
+Tom Opgenorth (toopge@microsoft.com)

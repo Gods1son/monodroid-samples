@@ -9,6 +9,7 @@ namespace ServicesDemo3
 	public class UtcTimestamper
 	{
 		DateTime startTime;
+		bool wasReset = false;
 
 		public UtcTimestamper()
 		{
@@ -18,7 +19,14 @@ namespace ServicesDemo3
 		public string GetFormattedTimestamp()
 		{
 			TimeSpan duration = DateTime.UtcNow.Subtract(startTime);
-			return $"Service started at {startTime} ({duration:c} ago).";
+
+			return wasReset ? $"Service restarted at {startTime} ({duration:c} ago)." : $"Service started at {startTime} ({duration:c} ago).";
+		}
+
+		public void Restart()
+		{
+			startTime = DateTime.UtcNow;
+			wasReset = true;
 		}
 	}
 }
