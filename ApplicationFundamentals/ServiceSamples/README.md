@@ -6,7 +6,7 @@ This directory holds the sample projects from the [Creating Services](https://de
 
 This solution shows how to [create and use a bound service](https://developer.xamarin.com/guides/android/application_fundamentals/services/creating-a-service/bound-service) in Xamarin.Android. The bound service will expose a method that can be called by the activity that is bound to it.
 
-**TODO: SCREENSHOTS**
+**{TODO: SCREENSHOTS FROM SERVICESDEMO1}**
 
 ## ServicesDemo2
 
@@ -19,6 +19,8 @@ This solution is a example of how to [create and use a started service](https://
 ## ServicesDemo3
 
 This solution is a variant of **ServicesDemo2**, except that the started service will register as a _foreground service_.
+
+**{TODO: SCREENSHOTS FROM SERVICESDEMO3}**
 
 ## Authors
 

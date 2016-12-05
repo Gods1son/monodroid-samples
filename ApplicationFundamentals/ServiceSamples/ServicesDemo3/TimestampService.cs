@@ -61,7 +61,7 @@ namespace ServicesDemo3
 				else 
 				{
 					Log.Info(TAG, "OnStartCommand: The service is starting.");
-					StartServiceInForeground();
+					RegisterForegroundService();
 					handler.PostDelayed(runnable, Constants.DELAY_BETWEEN_LOG_MESSAGES);
 					isStarted = true;
 				}
@@ -123,23 +123,29 @@ namespace ServicesDemo3
 			return timestamper?.GetFormattedTimestamp();
 		}
 
-		void StartServiceInForeground()
+		void RegisterForegroundService()
 		{
 			var notification = new Notification.Builder(this)
 				.SetContentTitle(Resources.GetString(Resource.String.app_name))
-				.SetTicker("TICKER TEXT")
 				.SetContentText(Resources.GetString(Resource.String.notification_text))
 				.SetSmallIcon(Resource.Drawable.ic_stat_name)
-				.SetContentIntent(BuildContentIntent())
+				.SetContentIntent(BuildIntentToShowMainActivity())
 				.SetOngoing(true)
 				.AddAction(BuildRestartTimerAction())
 				.AddAction(BuildStopServiceAction())
 				.Build();
 
+
+			// Enlist this instance of the service as a foreground service
 			StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification);
 		}
 
-		PendingIntent BuildContentIntent()
+		/// <summary>
+		/// Builds a PendingIntent that will display the main activity of the app. This is used when the 
+		/// user taps on the notification; it will take them to the main activity of the app.
+		/// </summary>
+		/// <returns>The content intent.</returns>
+		PendingIntent BuildIntentToShowMainActivity()
 		{
 			var notificationIntent = new Intent(this, typeof(MainActivity));
 			notificationIntent.SetAction(Constants.ACTION_MAIN_ACTIVITY);
@@ -150,6 +156,10 @@ namespace ServicesDemo3
 			return pendingIntent;
 		}
 
+		/// <summary>
+		/// Builds a Notification.Action that will instruct the service to restart the timer.
+		/// </summary>
+		/// <returns>The restart timer action.</returns>
 		Notification.Action BuildRestartTimerAction()
 		{
 			var restartTimerIntent = new Intent(this, GetType());
@@ -163,6 +173,11 @@ namespace ServicesDemo3
 			return builder.Build();
 		}
 
+		/// <summary>
+		/// Builds the Notification.Action that will allow the user to stop the service via the
+		/// notification in the status bar
+		/// </summary>
+		/// <returns>The stop service action.</returns>
 		Notification.Action BuildStopServiceAction()
 		{
 			var stopServiceIntent = new Intent(this, GetType());
