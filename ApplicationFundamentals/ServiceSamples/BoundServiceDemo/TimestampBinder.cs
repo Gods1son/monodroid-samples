@@ -4,7 +4,7 @@ using Android.Util;
 using Android.Content;
 using Android.OS;
 
-namespace ServicesDemo1
+namespace BoundServiceDemo
 {
 	public class TimestampBinder : Binder, IGetTimestamp
 	{

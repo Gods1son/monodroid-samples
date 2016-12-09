@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesDemo1", "ServicesDemo1.csproj", "{0AA509BC-079F-4F7F-AC61-76E801D3F715}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoundServiceDemo", "BoundServiceDemo.csproj", "{0AA509BC-079F-4F7F-AC61-76E801D3F715}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

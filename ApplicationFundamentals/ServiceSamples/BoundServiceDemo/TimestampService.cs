@@ -4,7 +4,7 @@ using Android.Util;
 using Android.Content;
 using Android.OS;
 
-namespace ServicesDemo1
+namespace BoundServiceDemo
 {
 	[Service(Name="com.xamarin.ServicesDemo1")]
 	public class TimestampService : Service, IGetTimestamp

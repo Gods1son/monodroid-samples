@@ -5,7 +5,7 @@ using Android.OS;
 using Android.Content;
 using System;
 
-namespace ServicesDemo1
+namespace BoundServiceDemo
 {
 	public class TimestampServiceConnection : Java.Lang.Object, IServiceConnection, IGetTimestamp
 	{

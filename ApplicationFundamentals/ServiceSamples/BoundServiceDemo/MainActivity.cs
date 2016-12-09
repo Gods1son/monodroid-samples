@@ -3,9 +3,9 @@ using Android.Content;
 using Android.OS;
 using Android.Widget;
 
-namespace ServicesDemo1
+namespace BoundServiceDemo
 {
-	[Activity(Label = "ServicesDemo1", MainLauncher = true, Icon = "@mipmap/icon")]
+	[Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon")]
 	public class MainActivity : Activity
 	{
 		Button timestampButton;
