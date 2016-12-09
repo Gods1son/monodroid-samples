@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesDemo3", "ServicesDemo3.csproj", "{C1580F4A-6722-43FC-8903-6CB7A0930D6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForegroundServiceDemo", "ForegroundServiceDemo.csproj", "{C1580F4A-6722-43FC-8903-6CB7A0930D6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
