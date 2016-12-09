@@ -5,7 +5,7 @@ using Android.Content;
 using Android.OS;
 using System.Threading;
 
-namespace ServicesDemo2
+namespace StartedServicesDemo
 {
 	/// <summary>
 	/// This is a sample started service. When the service is started, it will log a string that details how long 

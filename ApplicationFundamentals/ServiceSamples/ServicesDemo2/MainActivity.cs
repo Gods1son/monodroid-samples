@@ -3,7 +3,7 @@ using Android.Content;
 using Android.OS;
 using Android.Widget;
 using Android.Util;
-namespace ServicesDemo2
+namespace StartedServicesDemo
 {
 	[Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon")]
 	public class MainActivity : Activity

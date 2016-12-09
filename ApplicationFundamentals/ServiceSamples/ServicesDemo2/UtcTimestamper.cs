@@ -4,7 +4,7 @@ using Android.Util;
 using Android.Content;
 using Android.OS;
 
-namespace ServicesDemo2
+namespace StartedServicesDemo
 {
 
 	public class UtcTimestamper
