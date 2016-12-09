@@ -4,7 +4,7 @@ This directory holds the sample projects from the [Creating Services](https://de
 
 * **BoundServicesDemo** &ndash; Example of [creating a bound service](https://developer.xamarin.com/guides/android/application_fundamentals/services/creating-a-service/bound-services/) with Xamarin.Android.
 
-    ![](/Screenshots/bound-service.png)
+    ![](./Screenshots/bound-service.png)
 
 * **ForegroundServiceDemo** &ndash; A sample demonstrating a [foreground service](https://developer.xamarin.com/guides/android/application_fundamentals/services/foreground-services/).
 
